@@ -36,35 +36,35 @@ const BookingPage = () => {
   };
 
   // handleAvailability function
-const handleAvailability = async () => {
-  try {
-    dispatch(showLoading());
-    const res = await axios.post(
-      "/api/user/booking-availbility",
-      {
-        doctorId: params.doctorId,
-        date,
-        time,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const handleAvailability = async () => {
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(
+        "/api/user/booking-availbility",
+        {
+          doctorId: params.doctorId,
+          date,
+          time,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (res.data.success) {
+        setIsAvailable(true);
+        console.log(isAvailable);
+        message.success(res.data.message);
+      } else {
+        message.error(res.data.message);
       }
-    );
-    dispatch(hideLoading());
-    if (res.data.success) {
-      setIsAvailable(true);
-      console.log(isAvailable);
-      message.success(res.data.message);
-    } else {
-      message.error(res.data.message);
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error);
     }
-  } catch (error) {
-    dispatch(hideLoading());
-    console.log(error);
-  }
-};
+  };
 
   // =============== booking func
   const handleBooking = async () => {
@@ -101,7 +101,6 @@ const handleAvailability = async () => {
       console.log(error);
     }
   };
-  
 
   useEffect(() => {
     getUserData();
