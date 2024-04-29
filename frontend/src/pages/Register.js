@@ -1,4 +1,5 @@
 import { Form, Input, Button, message } from "antd";
+import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -19,7 +20,7 @@ const Register = () => {
       if (data.success) {
         localStorage.setItem("token", data.token);
         message.success("Registration Successful");
-        navigate("/");
+        navigate("/login");
       } else {
         message.error(data.message);
       }
@@ -47,9 +48,14 @@ const Register = () => {
           backgroundColor: "rgba(255, 255, 255, 0.8)",
           padding: "40px",
           borderRadius: "8px",
+          maxWidth: "400px",
+          width: "100%",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h1 style={{ marginBottom: "30px" }}>Register</h1>
+        <h1 style={{ marginBottom: "30px", color: "#1877f2" }}>
+          Create an Account
+        </h1>
         <Form layout="vertical" onFinish={submitHandler}>
           <Form.Item
             name="name"
@@ -60,6 +66,7 @@ const Register = () => {
             ]}
           >
             <Input
+              prefix={<UserOutlined />}
               placeholder="Name"
               style={{ width: "300px", marginBottom: "20px" }}
             />
@@ -72,6 +79,7 @@ const Register = () => {
             ]}
           >
             <Input
+              prefix={<MailOutlined />}
               placeholder="Email"
               style={{ width: "300px", marginBottom: "20px" }}
             />
@@ -97,19 +105,32 @@ const Register = () => {
             ]}
           >
             <Input.Password
+              prefix={<LockOutlined />}
               placeholder="Password"
               style={{ width: "300px", marginBottom: "20px" }}
             />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "300px" }}>
-              Register
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{
+                width: "300px",
+                backgroundColor: "#1877f2",
+                borderColor: "#1877f2",
+              }}
+            >
+              Sign Up
             </Button>
           </Form.Item>
         </Form>
         <div style={{ marginTop: "20px" }}>
-          <span style={{ marginRight: "10px" }}>Already a User?</span>
-          <Link to="/login">Login Here</Link>
+          <span style={{ marginRight: "10px", color: "#65676b" }}>
+            Already have an account?
+          </span>
+          <Link to="/login" style={{ color: "#1877f2" }}>
+            Log In
+          </Link>
         </div>
       </div>
     </div>
