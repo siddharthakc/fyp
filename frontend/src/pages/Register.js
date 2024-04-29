@@ -1,13 +1,14 @@
-import { Form, Input, message } from "antd";
+import { Form, Input, Button, message } from "antd";
 import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
+import backgroundImage from "./background.jpg"; // Import your background image
 
 const Register = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Submit for Register
   const submitHandler = async (values) => {
@@ -16,8 +17,9 @@ const Register = () => {
       const { data } = await axios.post("/api/user/register", values);
       dispatch(hideLoading());
       if (data.success) {
-      message.success("Registration Successful");
-      navigate("/login");
+        localStorage.setItem("token", data.token);
+        message.success("Registration Successful");
+        navigate("/");
       } else {
         message.error(data.message);
       }
@@ -28,12 +30,28 @@ const Register = () => {
   };
 
   return (
-    <>
-      <div className="register-page">
+    <div
+      className="login-page"
+      style={{
+        textAlign: "center",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          padding: "40px",
+          borderRadius: "8px",
+        }}
+      >
+        <h1 style={{ marginBottom: "30px" }}>Register</h1>
         <Form layout="vertical" onFinish={submitHandler}>
-          <h1>Register</h1>
           <Form.Item
-            label="Name"
             name="name"
             rules={[
               { required: true, message: "Please input your name!" },
@@ -41,25 +59,35 @@ const Register = () => {
               { max: 50, message: "Your name cannot exceed 50 characters" },
             ]}
           >
-            <Input />
+            <Input
+              placeholder="Name"
+              style={{ width: "300px", marginBottom: "20px" }}
+            />
           </Form.Item>
           <Form.Item
-            label="Email"
             name="email"
             rules={[
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Invalid email!" },
             ]}
           >
-            <Input />
+            <Input
+              placeholder="Email"
+              style={{ width: "300px", marginBottom: "20px" }}
+            />
           </Form.Item>
           <Form.Item
-            label="Password"
             name="password"
             rules={[
               { required: true, message: "Please input your password!" },
-              { min: 8, message: "Your password must be at least 8 characters" },
-              { max: 128, message: "Your password cannot exceed 128 characters" },
+              {
+                min: 8,
+                message: "Your password must be at least 8 characters",
+              },
+              {
+                max: 128,
+                message: "Your password cannot exceed 128 characters",
+              },
               {
                 pattern:
                   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?])/,
@@ -68,15 +96,23 @@ const Register = () => {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password
+              placeholder="Password"
+              style={{ width: "300px", marginBottom: "20px" }}
+            />
           </Form.Item>
-          <div className="d-flex justify-content-between">
-            <Link to="/login">Already Registered? Click Here to Login</Link>
-            <button className="btn btn-primary" type="submit">Register</button>
-          </div>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "300px" }}>
+              Register
+            </Button>
+          </Form.Item>
         </Form>
+        <div style={{ marginTop: "20px" }}>
+          <span style={{ marginRight: "10px" }}>Already a User?</span>
+          <Link to="/login">Login Here</Link>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
