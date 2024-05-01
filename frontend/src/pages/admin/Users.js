@@ -1,7 +1,8 @@
-import { Table, Modal, Button, message, Input } from "antd";
+import { Table, Modal, Button, message, Input, Tooltip, Space } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Layout from "./../../components/Layout";
+import moment from "moment";
 
 const { Search } = Input;
 
@@ -64,6 +65,10 @@ const Users = () => {
     setSearchValue(value.trim().toLowerCase());
   };
 
+  const handleClearSearch = () => {
+    setSearchValue("");
+  };
+
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchValue) ||
@@ -86,18 +91,27 @@ const Users = () => {
       render: (text, record) => <span>{record.isDoctor ? "Yes" : "No"}</span>,
     },
     {
+      title: "Date Joined",
+      dataIndex: "createdAt",
+      render: (text, record) => (
+        <span>{moment(record.createdAt).format("YYYY-MM-DD")}</span>
+      ),
+    },
+    {
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
-        <div className="d-flex">
-          <Button
-            className="m-1"
-            type="danger"
-            onClick={() => handleBlockUser(record.userId)}
-          >
-            Block
-          </Button>
-        </div>
+        <Space>
+          <Tooltip title="Block User">
+            <Button
+              className="m-1"
+              type="danger"
+              onClick={() => handleBlockUser(record.userId)}
+            >
+              Block
+            </Button>
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -106,17 +120,24 @@ const Users = () => {
     <Layout>
       <div className="mb-2">
         <h3 className="text-center m-2">Users List</h3>
-        <Search
-          placeholder="Search by name or email"
-          onSearch={handleSearch}
-          enterButton
-        />
+        <Space>
+          <Search
+            placeholder="Search by name or email"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onSearch={handleSearch}
+            enterButton
+          />
+          <Button onClick={handleClearSearch}>Clear</Button>
+        </Space>
       </div>
       <Table
         columns={columns}
         dataSource={filteredUsers}
         loading={loading}
         rowKey="userId"
+        pagination={{ pageSize: 10 }}
+        scroll={{ y: 400 }}
       />
 
       <Modal

@@ -9,19 +9,23 @@ const {
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-//POST SINGLE DOC INFO
+// Endpoint to post single doctor info
 router.post("/getDoctorInfo", authMiddleware, getDoctorInfoController);
 
-//POST UPDATE PROFILE
+// Endpoint to update doctor profile
 router.post("/updateProfile", authMiddleware, updateProfileController);
 
-//POST  GET SINGLE DOC INFO
+// Endpoint to post get single doctor info
 router.post("/getDoctorById", authMiddleware, getDoctorByIdController);
 
-//GET Appointments
-router.get("/doctor-appointments", authMiddleware, doctorAppointmentsController);
+// Endpoint to get doctor appointments
+router.get(
+  "/doctor-appointments",
+  authMiddleware,
+  doctorAppointmentsController
+);
 
-//POST Update Status
+// Endpoint to post update status
 router.post("/update-status", authMiddleware, updateStatusController);
 
 module.exports = router;

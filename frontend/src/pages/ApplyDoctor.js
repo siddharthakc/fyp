@@ -44,7 +44,7 @@ const ApplyDoctor = () => {
       message.error("Something Went Wrong");
     }
   };
-  
+
   return (
     <Layout>
       <h3 className="text-center">Apply Doctor</h3>

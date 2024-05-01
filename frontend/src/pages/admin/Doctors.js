@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Table, message, Button, Input, Modal } from "antd";
 import { Link } from "react-router-dom";
 import Layout from "./../../components/Layout";
+import Spinner from "./../../components/Spinner";
 
 const { Search } = Input;
 
@@ -34,6 +35,10 @@ const Doctors = () => {
     }
   };
 
+  useEffect(() => {
+    getDoctors();
+  }, []);
+
   const handleAccountStatus = async (record, status) => {
     try {
       const res = await axios.post(
@@ -57,12 +62,12 @@ const Doctors = () => {
     }
   };
 
-  useEffect(() => {
-    getDoctors();
-  }, []);
-
   const handleSearch = (value) => {
     setSearchValue(value.trim().toLowerCase());
+  };
+
+  const handleClearSearch = () => {
+    setSearchValue("");
   };
 
   const filteredDoctors = doctors.filter((doctor) => {
@@ -127,13 +132,21 @@ const Doctors = () => {
     <Layout>
       <div className="mb-2">
         <h3 className="text-center m-3">All Doctors</h3>
-        <Search
-          placeholder="Search by name or status"
-          onSearch={handleSearch}
-          enterButton
-        />
+        <div className="d-flex align-items-center mb-2">
+          <Search
+            placeholder="Search by name"
+            onSearch={handleSearch}
+            enterButton
+            style={{ marginRight: 10 }}
+          />
+          <Button onClick={handleClearSearch}>Clear</Button>
+        </div>
       </div>
-      <Table columns={columns} dataSource={filteredDoctors} loading={loading} />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Table columns={columns} dataSource={filteredDoctors} />
+      )}
       <Modal
         title="Doctor Details"
         visible={modalVisible}

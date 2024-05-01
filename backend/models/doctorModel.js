@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const Joi = require('joi');
+const Joi = require("joi");
 
+// Define the doctor schema
 const doctorSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -8,14 +9,14 @@ const doctorSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "First name is required"],
-    minlength: [2, 'Your first name must be at least 2 characters'],
-    maxlength: [50, 'Your first name cannot exceed 50 characters'],
+    minlength: [2, "Your first name must be at least 2 characters"],
+    maxlength: [50, "Your first name cannot exceed 50 characters"],
   },
   lastName: {
     type: String,
     required: [true, "Last name is required"],
-    minlength: [2, 'Your last name must be at least 2 characters'],
-    maxlength: [50, 'Your last name cannot exceed 50 characters'],
+    minlength: [2, "Your last name must be at least 2 characters"],
+    maxlength: [50, "Your last name cannot exceed 50 characters"],
   },
   phone: {
     type: String,
@@ -57,13 +58,14 @@ const doctorSchema = new mongoose.Schema({
   endtime: {
     type: String,
     required: [true],
-  },  
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
+// Define a Joi schema for doctor validation
 const docSchema = Joi.object({
   userId: Joi.string(),
   firstName: Joi.string().required().min(2).max(50),
@@ -75,7 +77,7 @@ const docSchema = Joi.object({
   specialization: Joi.string().required(),
   experience: Joi.string().required(),
   feesPerConsultation: Joi.number().required(),
-  status: Joi.string().default('pending'),
+  status: Joi.string().default("pending"),
   starttime: Joi.string().required(),
   endtime: Joi.string().required(),
   createdAt: Joi.date().default(Date.now),
@@ -86,5 +88,6 @@ doctorSchema.validateDoctor = async function () {
   return docSchema.validateAsync(this.toObject());
 };
 
+// Create the Doctor model
 const doctorModel = mongoose.model("doctors", doctorSchema);
 module.exports = doctorModel;

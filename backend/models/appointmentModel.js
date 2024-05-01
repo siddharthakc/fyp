@@ -1,6 +1,7 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
+const Joi = require("joi");
+const mongoose = require("mongoose");
 
+// Define the appointment schema
 const appointmentSchema = new mongoose.Schema(
   {
     userId: {
@@ -26,7 +27,7 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: 'pending',
+      default: "pending",
     },
     time: {
       type: String,
@@ -36,7 +37,6 @@ const appointmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
 // Define a Joi schema for appointment validation
 const appointmentJoiSchema = Joi.object({
   userId: Joi.string().required(),
@@ -44,12 +44,12 @@ const appointmentJoiSchema = Joi.object({
   doctorInfo: Joi.string().required(),
   userInfo: Joi.string().required(),
   date: Joi.date().required(),
-  status: Joi.string().required().default('pending'),
+  status: Joi.string().required().default("pending"),
   time: Joi.string().required(),
 }).options({ stripUnknown: true });
 
-
-const AppointmentModel = mongoose.model('appointments', appointmentSchema);
+// Create the Appointment model
+const AppointmentModel = mongoose.model("appointments", appointmentSchema);
 
 // Add the Joi validation to the Mongoose schema
 AppointmentModel.validateAppointment = async function () {

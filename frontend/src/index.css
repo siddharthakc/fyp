@@ -11,8 +11,6 @@
   width: 50px;
 }
 
-/*register page*/
-
 .register-page {
   display: flex;
   align-items: center;
@@ -27,6 +25,7 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
 .register-page form .d-flex {
   display: flex;
   justify-content: space-between;

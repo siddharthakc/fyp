@@ -1,15 +1,14 @@
 import React from "react";
-import Spinners from "react-bootstrap/Spinner";
+import Spinner from "react-bootstrap/Spinner";
 
-const Spinner = () => {
+const LoadingSpinner = () => {
   return (
-    <>
-      <div className="d-flex justify-content-center spinner">
-        <Spinners animation="border" variant="info" />
+    <div className="d-flex justify-content-center spinner">
+      <Spinner animation="border" variant="info" role="status">
         <span className="visually-hidden">Loading...</span>
-      </div>
-    </>
+      </Spinner>
+    </div>
   );
 };
 
-export default Spinner;
+export default LoadingSpinner;

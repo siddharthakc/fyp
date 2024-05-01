@@ -1,38 +1,37 @@
+// User menu
 export const userMenu = [
   {
     name: "Home",
     path: "/",
-    icon: "fa-solid fa-house",
+    icon: "fas fa-home",
   },
   {
     name: "Appointments",
     path: "/appointments",
-    icon: "fa-solid fa-list",
+    icon: "fas fa-calendar-alt",
   },
   {
     name: "Apply Doctor",
     path: "/apply-doctor",
-    icon: "fa-solid fa-user-doctor",
-  }
+    icon: "fas fa-user-md",
+  },
 ];
 
-// admin menu
+// Admin menu
 export const adminMenu = [
   {
     name: "Home",
     path: "/",
-    icon: "fa-solid fa-house",
+    icon: "fas fa-home",
   },
-
   {
     name: "Doctors",
     path: "/admin/doctors",
-    icon: "fa-solid fa-user-doctor",
+    icon: "fas fa-user-md",
   },
   {
     name: "Users",
     path: "/admin/users",
-    icon: "fa-solid fa-user",
-  }
+    icon: "fas fa-users",
+  },
 ];
-

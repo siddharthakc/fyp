@@ -11,25 +11,25 @@ const loginController = async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(404).send("User Not Found");
+      return res.status(404).send("user not found");
     }
     // Compare hashed password
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).send("Invalid Password");
+      return res.status(401).send("invalid password");
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res.status(200).send({ message: "Login Success", success: true, token });
+    res.status(200).send({ message: "login success", success: true, token });
   } catch (error) {
     console.log(error);
     console.log(process.env.JWT_SECRET);
-    res.status(500).send({ message: `Error in Login CTRL ${error.message}` });
+    res.status(500).send({ message: `error in login ctrl ${error.message}` });
   }
 };
 
-//Register Callback
+// register callback
 const registerController = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -57,6 +57,7 @@ const registerController = async (req, res) => {
   }
 };
 
+// authenticate user
 const authController = async (req, res) => {
   try {
     const user = await userModel.findById(req.body.userId);
@@ -82,7 +83,7 @@ const authController = async (req, res) => {
   }
 };
 
-// Appply Doctor Controller
+// apply for doctor account
 const applyDoctorController = async (req, res) => {
   try {
     const newDoctor = await doctorModel({ ...req.body, status: "pending" });
@@ -91,7 +92,7 @@ const applyDoctorController = async (req, res) => {
     const notification = adminUser.notification;
     notification.push({
       type: "apply-doctor-request",
-      message: `${newDoctor.firstName} ${newDoctor.lastName} Has Applied For A Doctor Account`,
+      message: `${newDoctor.firstName} ${newDoctor.lastName} has applied for a doctor account`,
       data: {
         doctorId: newDoctor._id,
         name: newDoctor.firstName + " " + newDoctor.lastName,
@@ -101,19 +102,19 @@ const applyDoctorController = async (req, res) => {
     await userModel.findByIdAndUpdate(adminUser._id, { notification });
     res.status(201).send({
       success: true,
-      message: "Doctor Account Applied Successfully",
+      message: "doctor account applied successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error While Applying For Doctor",
+      message: "error while applying for doctor",
     });
   }
 };
 
-// Notification controller
+// get all notifications
 const getAllNotificationController = async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.body.userId });
@@ -125,20 +126,20 @@ const getAllNotificationController = async (req, res) => {
     const updatedUser = await user.save();
     res.status(200).send({
       success: true,
-      message: "All Notifications Marked As Read",
+      message: "all notifications marked as read",
       data: updatedUser,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
-      message: "Error In Notification",
+      message: "error in notification",
       success: false,
       error,
     });
   }
 };
 
-// delete notifications
+// delete all notifications
 const deleteAllNotificationController = async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.body.userId });
@@ -148,26 +149,26 @@ const deleteAllNotificationController = async (req, res) => {
     updatedUser.password = undefined;
     res.status(200).send({
       success: true,
-      message: "Notifications Deleted Successfully",
+      message: "notifications deleted successfully",
       data: updatedUser,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Unable To Delete All Notifications",
+      message: "unable to delete all notifications",
       error,
     });
   }
 };
 
-//GET ALL DOC
+// get all doctors
 const getAllDocotrsController = async (req, res) => {
   try {
     const doctors = await doctorModel.find({ status: "approved" });
     res.status(200).send({
       success: true,
-      message: "Doctors Lists Fetched Successfully",
+      message: "doctors lists fetched successfully",
       data: doctors,
     });
   } catch (error) {
@@ -175,12 +176,12 @@ const getAllDocotrsController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error While Fetching Doctor",
+      message: "error while fetching doctor",
     });
   }
 };
 
-// Checking Availability
+// checking availability of appointment
 const bookingAvailabilityController = async (req, res) => {
   try {
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
@@ -189,7 +190,7 @@ const bookingAvailabilityController = async (req, res) => {
     const doctor = await doctorModel.findById(doctorId);
     if (!doctor) {
       return res.status(404).send({
-        message: "Doctor not found",
+        message: "doctor not found",
         success: false,
       });
     }
@@ -197,7 +198,7 @@ const bookingAvailabilityController = async (req, res) => {
     const end = moment(doctor.endtime, "HH:mm").toISOString();
     if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
       return res.status(200).send({
-        message: "Appointment Not Available",
+        message: "appointment not available",
         success: false,
       });
     }
@@ -208,78 +209,25 @@ const bookingAvailabilityController = async (req, res) => {
     });
     if (appointments.length > 0) {
       return res.status(200).send({
-        message: "Appointment Not Available",
+        message: "appointment not available",
         success: false,
       });
     }
     return res.status(200).send({
       success: true,
-      message: "Appointment Available",
+      message: "appointment available",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error Checking Appointment Availability",
+      message: "error checking appointment availability",
     });
   }
 };
 
-//BOOK APPOINTMENT
-/*const bookAppointmentController = async (req, res) => {
-  try {
-    const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
-    const startTime = moment(req.body.time, "HH:mm").toISOString();
-    const doctorId = req.body.doctorId;
-    const doctor = await doctorModel.findById(doctorId);
-    if (!doctor) {
-      return res.status(404).send({
-        message: "Doctor not found",
-        success: false,
-      });
-    }
-    const start = moment(doctor.starttime, "HH:mm").toISOString();
-    const end = moment(doctor.endtime, "HH:mm").toISOString();
-    if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
-      return res.status(400).send({
-        message: "Selected time is not within doctor's available range",
-        success: false,
-      });
-    }
-    const appointments = await appointmentModel.find({
-      doctorId,
-      date,
-    });
-    if (appointments.length >= doctor.maxPatientsPerDay) {
-      return res.status(400).send({
-        message: "Maximum number of appointments reached for this day",
-        success: false,
-      });
-    }
-    const newAppointment = new appointmentModel({
-      doctorId,
-      userId: req.body.userId,
-      date,
-      time: startTime,
-      doctorInfo: req.body.doctorInfo,
-      userInfo: req.body.userInfo,
-    });
-    await newAppointment.save();
-    return res.status(200).send({
-      success: true,
-      message: "Appointment Booked Successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      error,
-      message: "Error In Booking Appointment",
-    });
-  }
-};*/
-
+// book appointment
 const bookAppointmentController = async (req, res) => {
   try {
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
@@ -288,7 +236,7 @@ const bookAppointmentController = async (req, res) => {
     const doctor = await doctorModel.findById(doctorId);
     if (!doctor) {
       return res.status(404).send({
-        message: "Doctor Not Found",
+        message: "doctor not found",
         success: false,
       });
     }
@@ -296,18 +244,17 @@ const bookAppointmentController = async (req, res) => {
     const end = moment(doctor.endtime, "HH:mm").toISOString();
     if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
       return res.status(400).send({
-        message: "Selected Time Is Not Within Doctor's Available Range",
+        message: "selected time is not within doctor's available range",
         success: false,
       });
     }
     const appointments = await appointmentModel.find({
       doctorId,
       date,
-      status: "approved",
     });
     if (appointments.length >= doctor.maxPatientsPerDay) {
       return res.status(400).send({
-        message: "Maximum Number Of Appointments Reached For This Day",
+        message: "maximum number of appointments reached for this day",
         success: false,
       });
     }
@@ -315,11 +262,10 @@ const bookAppointmentController = async (req, res) => {
       doctorId,
       date,
       time: startTime,
-      status: "approved",
     });
     if (existingAppointment) {
       return res.status(400).send({
-        message: "Appointment Already Booked For This Time Slot",
+        message: "appointment already booked for this time slot",
         success: false,
       });
     }
@@ -334,18 +280,19 @@ const bookAppointmentController = async (req, res) => {
     await newAppointment.save();
     return res.status(200).send({
       success: true,
-      message: "Appointment Booked Successfully",
+      message: "appointment booked successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error In Booking Appointment",
+      message: "error in booking appointment",
     });
   }
 };
 
+// get user appointments
 const userAppointmentsController = async (req, res) => {
   try {
     const appointments = await appointmentModel.find({
@@ -353,7 +300,7 @@ const userAppointmentsController = async (req, res) => {
     });
     res.status(200).send({
       success: true,
-      message: "Users Appointments Fetch Successfully",
+      message: "users appointments fetch successfully",
       data: appointments,
     });
   } catch (error) {
@@ -361,7 +308,7 @@ const userAppointmentsController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error In User Appointments",
+      message: "error in user appointments",
     });
   }
 };

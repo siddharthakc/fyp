@@ -6,17 +6,19 @@ const {
 } = require("../controllers/adminController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-
 const router = express.Router();
 
-//GET METHOD || USERS
+// Endpoint to fetch all users
 router.get("/getAllUsers", authMiddleware, getAllUsersController);
 
-//GET METHOD || DOCTORS
+// Endpoint to fetch all doctors
 router.get("/getAllDoctors", authMiddleware, getAllDoctorsController);
 
-//POST ACCOUNT STATUS
-router.post("/changeAccountStatus", authMiddleware, changeAccountStatusController);
-
+// Endpoint to change account status
+router.post(
+  "/changeAccountStatus",
+  authMiddleware,
+  changeAccountStatusController
+);
 
 module.exports = router;

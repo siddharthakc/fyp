@@ -1,10 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-export default function PublicRoute({ children }) {
-  if (localStorage.getItem("token")) {
-    return <Navigate to="/" />;
-  } else {
-    return children;
-  }
-}
+const PublicRoute = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem("token");
+
+  return isAuthenticated ? <Navigate to="/" /> : children;
+};
+
+export default PublicRoute;

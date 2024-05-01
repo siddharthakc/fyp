@@ -1,5 +1,5 @@
-import { Badge, message } from "antd";
 import React from "react";
+import { Badge, Button, message } from "antd";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../styles/LayoutStyles.css";
@@ -10,37 +10,22 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // logout function
+  // Logout function
   const handleLogout = () => {
     localStorage.clear();
-    message.success("Logout Successfully");
+    message.success("Logged out successfully");
     navigate("/login");
   };
-  // =========== doctor menu ===============
-  const doctorMenu = [
-    {
-      name: "Home",
-      path: "/",
-      icon: "fa-solid fa-house",
-    },
-    {
-      name: "Appointments",
-      path: "/doctor-appointments",
-      icon: "fa-solid fa-list",
-    },
-    {
-      name: "Profile",
-      path: `/doctor/profile/${user?._id}`,
-      icon: "fa-solid fa-user",
-    },
-  ];
-  // =========== doctor menu ===============
 
-  // rendering menu list
-  const SidebarMenu = user?.isAdmin
+  // Sidebar menu based on user role
+  const sidebarMenu = user?.isAdmin
     ? adminMenu.filter((menu) => menu.name !== "Profile")
     : user?.isDoctor
-    ? doctorMenu
+    ? [
+        { name: "Home", path: "/" },
+        { name: "Appointments", path: "/doctor-appointments" },
+        { name: "Profile", path: `/doctor/profile/${user?._id}` },
+      ]
     : userMenu.filter((menu) => menu.name !== "Profile");
 
   return (
@@ -52,7 +37,7 @@ const Layout = ({ children }) => {
             <hr />
           </div>
           <div className="menu">
-            {SidebarMenu.map((menu) => {
+            {sidebarMenu.map((menu) => {
               const isActive = location.pathname === menu.path;
               return (
                 <div
@@ -72,17 +57,19 @@ const Layout = ({ children }) => {
         </div>
         <div className="content">
           <div className="header">
-            <div className="header-content" style={{ cursor: "pointer" }}>
+            <div className="header-content">
               <Badge
-                count={user && user.notification ? user.notification.length : 0}
-                onClick={() => {
-                  navigate("/notification");
-                }}
+                count={user?.notification ? user.notification.length : 0}
+                overflowCount={99}
               >
-                <i className="fa-solid fa-bell"></i>
+                <Button
+                  type="text"
+                  icon={<i className="fa-solid fa-bell"></i>}
+                  onClick={() => navigate("/notification")}
+                />
               </Badge>
             </div>
-            <div className="user-doctor-admin-name">
+            <div className="user-name">
               <h5>{user?.name}</h5>
             </div>
           </div>
